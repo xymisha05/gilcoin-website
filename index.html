@@ -5,46 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GilCoin (GILC) - Memecoin World</title>
     <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(120deg, #fff0f5, #fef5f9); /* ultra-soft pink */
-    color: #333;
-    padding: 20px;
-    max-width: 800px;
-    margin: auto;
-  }
-  h1 {
-    color: #8e24aa;
-  }
-  input, button {
-    padding: 10px;
-    margin: 5px 0;
-    width: 100%;
-    font-size: 16px;
-    border: none;
-  }
-  .log {
-    background: #ffffff;
-    color: #000000;
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-top: 20px;
-    height: 200px;
-    overflow-y: auto;
-  }
-  .balance {
-    background: #e1bee7;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  .intro {
-    background: #f3e5f5;
-    padding: 15px;
-    border-left: 5px solid #ce93d8;
-    margin-bottom: 20px;
-  }
-</style>
-
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #fff0f5, #fef5f9); /* ultra-soft pink */
+      color: #333;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #8e24aa;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 16px;
+      border: none;
+    }
+    button {
+      background-color: #8e24aa;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #6a1b9a;
+    }
+    .log {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-top: 20px;
+      height: 200px;
+      overflow-y: auto;
+    }
+    .balance {
+      background: #e1bee7;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .intro {
+      background: #f3e5f5;
+      padding: 15px;
+      border-left: 5px solid #ce93d8;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
 <h1>GilCoin (GILC) - Welcome to GilCoin World!</h1>
@@ -95,10 +104,12 @@
       document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
 
       const time = new Date().toLocaleTimeString();
-      const message = `[\${time}] Sent \${amount} GILC to \${recipient}. Recipient now has \${balances[recipient]} GILC.`;
-
       const entry = document.createElement('div');
-      entry.textContent = message;
+      entry.innerHTML = `
+        <strong>[${time}]</strong><br>
+        Sent <strong>${amount} GILC</strong> to <code>${recipient}</code>.<br>
+        New balance of recipient: <strong>${balances[recipient]} GILC</strong><br><br>
+      `;
       log.prepend(entry);
 
       document.getElementById('recipient').value = '';

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GilCoin (GILC) - Memecoin World</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GilCoin (GILC) - Memecoin World</title>
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <style>
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(120deg, #fff0f5, #fef5f9);
@@ -71,36 +71,36 @@
 </head>
 <body>
 
-  <img src="gilcoin-logo.png" alt="GilCoin Logo" class="logo" />
+<img src="gilcoin-logo.png" alt="GilCoin Logo" class="logo" />
 
-  <h1>GilCoin (GILC) - Welcome to GilCoin World!</h1>
+<h1>GilCoin (GILC) - Welcome to GilCoin World!</h1>
 
-  <div class="intro">
+<div class="intro">
     <h3>🚀 Launch Message:</h3>
     <p>GilCoin (GILC) is a bold, ridiculous, completely simulated memecoin born out of student genius. It doesn’t run on blockchain — it runs on ambition. With 1,000,000 GILC in circulation, we invite you to explore token transfers, track balances, and learn the magic behind memecoins — all in a safe, offline sandbox.</p>
     <p><strong>GilCoin:</strong> It’s not real, but it’s really smart.</p>
-  </div>
+</div>
 
-  <div class="balance">
+<div class="balance">
     <strong>Supplier Address:</strong> <span id="owner">0xSUPPLIER123</span><br/>
     <strong>Balance:</strong> <span id="ownerBalance">1000000</span> GILC
-  </div>
+</div>
 
-  <div class="counters">
+<div class="counters">
     👥 Total Unique Holders: <span id="totalHolders">0</span><br/>
     🔁 Total Transfers: <span id="transferCount">0</span>
-  </div>
+</div>
 
-  <h3>Send GilCoin</h3>
-  <input type="text" id="recipient" placeholder="Recipient Address" />
-  <input type="number" id="amount" placeholder="Amount to Send" />
-  <button onclick="sendGilCoin()">Send GILC</button>
+<h3>Send GilCoin</h3>
+<input type="text" id="recipient" placeholder="Recipient Address" />
+<input type="number" id="amount" placeholder="Amount to Send" />
+<button onclick="sendGilCoin()">Send GILC</button>
 
-  <div class="log" id="log">
+<div class="log" id="log">
     <em>Transaction log will appear here...</em>
-  </div>
+</div>
 
-  <script>
+<script>
     let balances = {
       '0xSUPPLIER123': 1000000
     };

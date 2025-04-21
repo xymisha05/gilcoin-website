@@ -1,141 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GilCoin (GILC) - Memecoin World</title>
-    <link rel="icon" type="image/png" href="41462aea-91df-4932-a28c-bf4ec2bbf883.png" />
-    <style>
-        body {
-          font-family: Arial, sans-serif;
-          background: linear-gradient(120deg, #fff0f5, #fef5f9);
-          color: #333;
-          padding: 20px;
-          max-width: 800px;
-          margin: auto;
-        }
-        h1 {
-          color: #8e24aa;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        h1 img {
-          height: 50px;
-          border-radius: 50%;
-        }
-        input, button {
-          padding: 10px;
-          margin: 5px 0;
-          width: 100%;
-          font-size: 16px;
-          border: none;
-        }
-        button {
-          background-color: #8e24aa;
-          color: white;
-          font-weight: bold;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        button:hover {
-          background-color: #6a1b9a;
-        }
-        .log {
-          background: #ffffff;
-          color: #000000;
-          border: 1px solid #ccc;
-          padding: 15px;
-          margin-top: 20px;
-          height: 200px;
-          overflow-y: auto;
-        }
-        .balance {
-          background: #e1bee7;
-          padding: 10px;
-          margin-bottom: 10px;
-        }
-        .intro {
-          background: #f3e5f5;
-          padding: 15px;
-          border-left: 5px solid #ce93d8;
-          margin-bottom: 20px;
-        }
-        .stats {
-          background: #fce4ec;
-          border-left: 5px solid #f06292;
-          padding: 15px;
-          margin-top: 30px;
-        }
-        .stats h3 {
-          color: #ad1457;
-        }
-        .stats ul {
-          list-style-type: none;
-          padding: 0;
-        }
-        .stats li {
-          margin-bottom: 10px;
-        }
-        code {
-          background: #f3f3f3;
-          padding: 2px 4px;
-          border-radius: 4px;
-          font-family: monospace;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GilCoin (GILC) - Memecoin World</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #fff0f5, #fef5f9);
+      color: #333;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #8e24aa;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 16px;
+      border: none;
+    }
+    button {
+      background-color: #8e24aa;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #6a1b9a;
+    }
+    .log {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-top: 20px;
+      height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    .balance {
+      background: #e1bee7;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .intro {
+      background: #f3e5f5;
+      padding: 15px;
+      border-left: 5px solid #ce93d8;
+      margin-bottom: 20px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 120px;
+      border-radius: 12px;
+    }
+    .counters {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #6a1b9a;
+    }
+  </style>
 </head>
 <body>
 
-<h1>
-    <img src="41462aea-91df-4932-a28c-bf4ec2bbf883.png" alt="GilCoin Logo">
-    GilCoin (GILC) - Welcome to GilCoin World!
-</h1>
+  <img src="gilcoin-logo.png" alt="GilCoin Logo" class="logo" />
 
-<div class="intro">
+  <h1>GilCoin (GILC) - Welcome to GilCoin World!</h1>
+
+  <div class="intro">
     <h3>🚀 Launch Message:</h3>
     <p>GilCoin (GILC) is a bold, ridiculous, completely simulated memecoin born out of student genius. It doesn’t run on blockchain — it runs on ambition. With 1,000,000 GILC in circulation, we invite you to explore token transfers, track balances, and learn the magic behind memecoins — all in a safe, offline sandbox.</p>
     <p><strong>GilCoin:</strong> It’s not real, but it’s really smart.</p>
-</div>
+  </div>
 
-<div class="balance">
+  <div class="balance">
     <strong>Supplier Address:</strong> <span id="owner">0xSUPPLIER123</span><br/>
     <strong>Balance:</strong> <span id="ownerBalance">1000000</span> GILC
-</div>
+  </div>
 
-<h3>Send GilCoin</h3>
-<input type="text" id="recipient" placeholder="Recipient Address" />
-<input type="number" id="amount" placeholder="Amount to Send" />
-<button onclick="sendGilCoin()">Send GILC</button>
+  <div class="counters">
+    👥 Total Unique Holders: <span id="totalHolders">0</span><br/>
+    🔁 Total Transfers: <span id="transferCount">0</span>
+  </div>
 
-<div class="log" id="log">
+  <h3>Send GilCoin</h3>
+  <input type="text" id="recipient" placeholder="Recipient Address" />
+  <input type="number" id="amount" placeholder="Amount to Send" />
+  <button onclick="sendGilCoin()">Send GILC</button>
+
+  <div class="log" id="log">
     <em>Transaction log will appear here...</em>
-</div>
+  </div>
 
-<div class="stats">
-    <h3>📊 GilCoin Community Stats</h3>
-    <ul>
-        <li><strong>Total Users:</strong> 2.1 million warriors of wallet</li>
-        <li><strong>Wallets Registered:</strong> 5,245,872 (every alt has a savings account)</li>
-        <li><strong>Transactions Per Day:</strong> 987,000+ (mostly glamour prism purchases)</li>
-        <li><strong>Total GILC in Circulation:</strong> 999,999,999,999 GILC</li>
-        <li><strong>Current Value:</strong> 1 GILC = 0.000069 nice USD</li>
-        <li><strong>Top GilCoin Whales:</strong>
-            <ul>
-                <li><strong>Zenos#1Fan:</strong> 20M GILC – Blew it all on one emote</li>
-                <li><strong>NotAScammer:</strong> 19M GILC – Definitely suspicious</li>
-                <li><strong>CraftDaddy69:</strong> 17M GILC – Controls the glam economy</li>
-                <li><strong>LalaLord:</strong> 15.5M GILC – Short king, long bag</li>
-                <li><strong>HousingSavage:</strong> 12M GILC – Has 3 plots and no shame</li>
-            </ul>
-        </li>
-    </ul>
-</div>
-
-<script>
+  <script>
     let balances = {
       '0xSUPPLIER123': 1000000
     };
+    let uniqueHolders = new Set();
+    let totalTransfers = 0;
 
     function sendGilCoin() {
       const recipient = document.getElementById('recipient').value.trim();
@@ -157,6 +127,13 @@
 
       document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
 
+      // Update counters
+      uniqueHolders.add(recipient);
+      totalTransfers++;
+
+      document.getElementById('totalHolders').textContent = uniqueHolders.size;
+      document.getElementById('transferCount').textContent = totalTransfers;
+
       const time = new Date().toLocaleTimeString();
       const entry = document.createElement('div');
       entry.innerHTML = `
@@ -169,7 +146,6 @@
       document.getElementById('recipient').value = '';
       document.getElementById('amount').value = '';
     }
-</script>
-
+  </script>
 </body>
 </html>

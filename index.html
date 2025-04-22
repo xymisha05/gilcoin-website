@@ -2,150 +2,456 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GilCoin (GILC) - Memecoin World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GilCoin (GILC) - FFXIV Edition</title>
     <link rel="icon" href="favicon.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #fff0f5, #fef5f9);
-      color: #333;
-      padding: 20px;
-      max-width: 800px;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to bottom right, #fef6f0, #f9f1f3);
+      color: #5e5e5e;
+      padding: 30px;
+      max-width: 820px;
       margin: auto;
+      border-radius: 12px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
+
     h1 {
-      color: #8e24aa;
+      font-size: 24px;
+      color: #a67873;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
+
+    h1 img {
+      height: 50px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    input, select, button {
+      padding: 12px;
+      margin: 6px 0;
       width: 100%;
       font-size: 16px;
-      border: none;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-family: inherit;
     }
+
     button {
-      background-color: #8e24aa;
+      background-color: #a67873;
       color: white;
       font-weight: bold;
-      border-radius: 4px;
+      border: none;
       cursor: pointer;
     }
+
     button:hover {
-      background-color: #6a1b9a;
+      opacity: 0.9;
     }
-    .log {
-      background: #ffffff;
-      color: #000000;
-      border: 1px solid #ccc;
+
+    .log, .balance, .metrics, .intro, .chart-container, #questsSection {
+      background: #ffffffdd;
+      border-left: 5px solid #a67873;
       padding: 15px;
-      margin-top: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+    }
+
+    .log {
       height: 200px;
       overflow-y: auto;
       font-size: 14px;
     }
-    .balance {
-      background: #e1bee7;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    .intro {
-      background: #f3e5f5;
-      padding: 15px;
-      border-left: 5px solid #ce93d8;
-      margin-bottom: 20px;
-    }
-    .logo {
-      display: block;
-      margin: 0 auto 20px auto;
-      width: 120px;
+
+    .commentary {
+      background: linear-gradient(to right, #fbe3d4, #ffe6ec);
+      border: 2px solid #e3a899;
+      color: #5c2e28;
+      font-style: italic;
+      font-size: 15px;
+      padding: 14px;
       border-radius: 12px;
-    }
-    .counters {
       margin-top: 10px;
+    }
+
+    .chart-container canvas {
+      background-color: white;
+      border-radius: 5px;
+    }
+
+    #onboarding {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to right, #3e2723, #5d4037);
+      color: #fce4ec;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+      padding: 40px;
+      text-align: center;
+      font-family: 'Quicksand', serif;
+    }
+
+    #onboarding h2 {
+      font-size: 28px;
       margin-bottom: 20px;
+    }
+
+    #onboarding p {
+      max-width: 600px;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    #beginBtn {
+      padding: 12px 30px;
+      background-color: #ffab91;
+      color: #3e2723;
+      border: none;
+      font-size: 16px;
+      border-radius: 10px;
       font-weight: bold;
-      color: #6a1b9a;
+      cursor: pointer;
+    }
+
+    #beginBtn:hover {
+      background-color: #ff8a65;
+    }
+
+    #sideMenu button {
+      background: #d7ccc8;
+      color: #3e2723;
+      width: 100%;
+      border: none;
+      padding: 10px;
+      margin: 10px 0;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .quest {
+      margin-bottom: 12px;
+      padding: 10px;
+      border-left: 4px solid #a67873;
+      background: #fef0f4;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .quest.completed {
+      background: #e0f2f1;
+      border-left-color: #66bb6a;
+      color: #2e7d32;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-
-<img src="gilcoin-logo.png" alt="GilCoin Logo" class="logo" />
-
-<h1>GilCoin (GILC) - Welcome to GilCoin World!</h1>
-
-<div class="intro">
-    <h3>🚀 Launch Message:</h3>
-    <p>GilCoin (GILC) is a bold, ridiculous, completely simulated memecoin born out of student genius. It doesn’t run on blockchain — it runs on ambition. With 1,000,000 GILC in circulation, we invite you to explore token transfers, track balances, and learn the magic behind memecoins — all in a safe, offline sandbox.</p>
-    <p><strong>GilCoin:</strong> It’s not real, but it’s really smart.</p>
+<!-- 🧾 Onboarding Scroll -->
+<div id="onboarding">
+    <h2>📜 The Namazu Scroll Says:</h2>
+    <p id="loreText">Initializing lore...</p>
+    <button id="beginBtn" onclick="showClassPrompt()">Begin Trading</button>
 </div>
 
-<div class="balance">
-    <strong>Supplier Address:</strong> <span id="owner">0xSUPPLIER123</span><br/>
-    <strong>Balance:</strong> <span id="ownerBalance">1000000</span> GILC
+<!-- 🛡️ Class Selection -->
+<div id="classPrompt" style="display: none; text-align: center; padding: 40px;">
+    <h2>Select Your Class</h2>
+    <p>Before entering the GilCoin world, choose your adventuring role:</p>
+    <select id="classSelectorPrompt" style="max-width: 300px;">
+        <option value="Alchemist">🔮 Alchemist</option>
+        <option value="Bard">🎵 Bard</option>
+        <option value="Paladin">🛡️ Paladin</option>
+        <option value="Rogue">🗡️ Rogue</option>
+        <option value="Scholar">📚 Scholar</option>
+    </select><br><br>
+    <button onclick="enterApp()">Enter GilCoin World</button>
 </div>
 
-<div class="counters">
-    👥 Total Unique Holders: <span id="totalHolders">0</span><br/>
-    🔁 Total Transfers: <span id="transferCount">0</span>
+<!-- 💱 Main GilCoin App -->
+<div id="mainApp" style="display: none;">
+
+    <!-- ☰ Hamburger Menu Button -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 999;">
+        <button onclick="toggleMenu()" style="padding: 10px 14px; font-size: 18px; border-radius: 6px;">☰</button>
+    </div>
+
+    <!-- 🔒 Sliding Menu Panel -->
+    <div id="sideMenu" style="
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 260px;
+    height: 100%;
+    background: #fef0f4;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    transition: right 0.4s ease;
+    padding: 20px;
+    z-index: 1000;
+  ">
+        <h3>📂 Menu</h3>
+        <button onclick="toggleSection('questsSection')">🧙 Trading Quests</button>
+        <button onclick="toggleSection('chartSection')">📈 Transfer Chart</button>
+        <button onclick="toggleSection('aboutSection')">📜 About GilCoin</button>
+    </div>
+
+    <h1>
+        <img src="gilcoin-logo.png" alt="GilCoin Logo">
+        GilCoin (GILC) – Fantasy Finance for FFXIV Fans
+    </h1>
+
+    <div class="intro" id="aboutSection" style="display: none;">
+        <h3>🌸 A Mindfully Minted Currency</h3>
+        <p>GilCoin (GILC) is a lore-driven, educationally delightful memecoin simulator. Transfer tokens, view real-time graphs, and let NamazuBot guide you with class-based wisdom.</p>
+    </div>
+
+    <div class="balance">
+        <strong>Supplier Address:</strong> <span id="owner">0xSUPPLIER123</span><br/>
+        <strong>Balance:</strong> <span id="ownerBalance">1000000</span> GILC
+    </div>
+
+    <div class="metrics">
+        🧑‍🤝‍🧑 <strong>Total Unique Holders:</strong> <span id="holderCount">0</span><br>
+        🔁 <strong>Total Transfers:</strong> <span id="transferCount">0</span>
+    </div>
+
+    <h3>Send GilCoin</h3>
+    <input type="text" id="recipient" placeholder="Recipient Address" />
+    <input type="number" id="amount" placeholder="Amount to Send" />
+    <button onclick="sendGilCoin()">Send GILC</button>
+
+    <div class="log" id="log">
+        <em>Transaction log will appear here...</em>
+    </div>
+
+    <div class="commentary" id="commentary">
+        <em>NamazuBot is observing the market in silence...</em>
+    </div>
+
+    <div class="chart-container" id="chartSection" style="display: none;">
+        <h3>📈 Transfers Over Time</h3>
+        <canvas id="transferChart" height="150"></canvas>
+    </div>
+
+    <div id="questsSection" style="display: none;">
+        <div class="chart-container">
+            <h3>🧙 Trading Quests</h3>
+            <div id="quest1" class="quest">Complete 5 transfers (Progress: <span id="q1Progress">0</span>/5)</div>
+            <div id="quest2" class="quest">Send to 3 unique addresses (Progress: <span id="q2Progress">0</span>/3)</div>
+            <div id="quest3" class="quest">Transfer a total of 300 GILC (Progress: <span id="q3Progress">0</span>/300)</div>
+        </div>
+    </div>
 </div>
-
-<h3>Send GilCoin</h3>
-<input type="text" id="recipient" placeholder="Recipient Address" />
-<input type="number" id="amount" placeholder="Amount to Send" />
-<button onclick="sendGilCoin()">Send GILC</button>
-
-<div class="log" id="log">
-    <em>Transaction log will appear here...</em>
-</div>
-
 <script>
-    let balances = {
-      '0xSUPPLIER123': 1000000
-    };
-    let uniqueHolders = new Set();
-    let totalTransfers = 0;
+  const lore = `In the year of the Crystal Bull, when Rowena's vaults overflowed and the glam merchants whispered of rebellion... a coin was minted.
 
-    function sendGilCoin() {
-      const recipient = document.getElementById('recipient').value.trim();
-      const amount = parseFloat(document.getElementById('amount').value);
-      const log = document.getElementById('log');
+GilCoin — a currency forged not by moguls, but by meme. Backed not by gold, but by ambition.
 
-      if (!recipient || isNaN(amount) || amount <= 0) {
-        alert('Please enter a valid address and amount.');
-        return;
-      }
+Now you, trader of fate, have been summoned.
 
-      if (!balances['0xSUPPLIER123'] || balances['0xSUPPLIER123'] < amount) {
-        alert('Insufficient balance in supplier account.');
-        return;
-      }
+Will you hold? Will you sell? Or will you become a legend of the GilChain?`;
 
-      balances['0xSUPPLIER123'] -= amount;
-      balances[recipient] = (balances[recipient] || 0) + amount;
-
-      document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
-
-      // Update counters
-      uniqueHolders.add(recipient);
-      totalTransfers++;
-
-      document.getElementById('totalHolders').textContent = uniqueHolders.size;
-      document.getElementById('transferCount').textContent = totalTransfers;
-
-      const time = new Date().toLocaleTimeString();
-      const entry = document.createElement('div');
-      entry.innerHTML = `
-        <strong>[${time}]</strong><br>
-        Sent <strong>${amount} GILC</strong> to <code>${recipient}</code>.<br>
-        New balance of recipient: <strong>${balances[recipient]} GILC</strong><br><br>
-      `;
-      log.prepend(entry);
-
-      document.getElementById('recipient').value = '';
-      document.getElementById('amount').value = '';
+  let i = 0;
+  function typeWriter() {
+    const target = document.getElementById("loreText");
+    if (i < lore.length) {
+      target.textContent += lore.charAt(i);
+      i++;
+      setTimeout(typeWriter, 35);
     }
-  </script>
+  }
+
+  function showClassPrompt() {
+    document.getElementById("onboarding").style.display = "none";
+    document.getElementById("classPrompt").style.display = "block";
+  }
+
+  function enterApp() {
+    const selected = document.getElementById("classSelectorPrompt").value;
+    document.getElementById("classPrompt").style.display = "none";
+    document.getElementById("mainApp").style.display = "block";
+    document.body.style.opacity = "1";
+    window.selectedClass = selected;
+  }
+
+  window.onload = () => {
+    typeWriter();
+    document.body.style.opacity = '1';
+  };
+
+  // Menu toggle
+  function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    if (menu.style.right === "0px") {
+      menu.style.right = "-280px";
+    } else {
+      menu.style.right = "0px";
+    }
+  }
+
+  // Section toggle
+  function toggleSection(id) {
+    const sections = ["chartSection", "questsSection", "aboutSection"];
+    sections.forEach(sec => {
+      document.getElementById(sec).style.display = (sec === id) ? "block" : "none";
+    });
+    toggleMenu();
+  }
+
+  // GilCoin logic
+  let balances = { '0xSUPPLIER123': 1000000 };
+  let transferCount = 0;
+  let uniqueHolders = new Set();
+
+  const ctx = document.getElementById('transferChart').getContext('2d');
+  const transferChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Transfers',
+        data: [],
+        borderColor: '#a67873',
+        backgroundColor: 'rgba(166, 120, 115, 0.2)',
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { title: { display: true, text: 'Time' } },
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      }
+    }
+  });
+
+  let questProgress = {
+    transfers: 0,
+    uniqueAddresses: new Set(),
+    totalSent: 0,
+    completed: [false, false, false]
+  };
+
+  function awardQuest(index, questId) {
+    questProgress.completed[index] = true;
+    balances['0xSUPPLIER123'] += 50;
+    document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+    const questEl = document.getElementById(questId);
+    questEl.classList.add("completed");
+    questEl.innerHTML += ` ✅ +50 GILC Rewarded!`;
+  }
+
+  function updateQuests(amount, recipient) {
+    questProgress.transfers++;
+    questProgress.totalSent += amount;
+    questProgress.uniqueAddresses.add(recipient);
+
+    document.getElementById('q1Progress').textContent = questProgress.transfers;
+    document.getElementById('q2Progress').textContent = questProgress.uniqueAddresses.size;
+    document.getElementById('q3Progress').textContent = questProgress.totalSent;
+
+    if (!questProgress.completed[0] && questProgress.transfers >= 5) {
+      awardQuest(0, 'quest1');
+    }
+    if (!questProgress.completed[1] && questProgress.uniqueAddresses.size >= 3) {
+      awardQuest(1, 'quest2');
+    }
+    if (!questProgress.completed[2] && questProgress.totalSent >= 300) {
+      awardQuest(2, 'quest3');
+    }
+  }
+
+  function sendGilCoin() {
+    const recipient = document.getElementById('recipient').value.trim();
+    const amount = parseFloat(document.getElementById('amount').value);
+    const log = document.getElementById('log');
+    const role = window.selectedClass || 'Scholar';
+
+    if (!recipient || isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid address and amount.');
+      return;
+    }
+
+    if (balances['0xSUPPLIER123'] < amount) {
+      alert('Insufficient balance in supplier account.');
+      return;
+    }
+
+    balances['0xSUPPLIER123'] -= amount;
+    balances[recipient] = (balances[recipient] || 0) + amount;
+
+    if (!uniqueHolders.has(recipient)) {
+      uniqueHolders.add(recipient);
+      document.getElementById('holderCount').textContent = uniqueHolders.size;
+    }
+
+    transferCount++;
+    document.getElementById('transferCount').textContent = transferCount;
+    document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+
+    const time = new Date().toLocaleTimeString();
+    const entry = document.createElement('div');
+    entry.innerHTML = `
+      <strong>[${time}]</strong><br>
+      Sent <strong>${amount} GILC</strong> to <code>${recipient}</code>.<br>
+      New balance of recipient: <strong>${balances[recipient]} GILC</strong><br><br>
+    `;
+    log.prepend(entry);
+
+    document.getElementById('recipient').value = '';
+    document.getElementById('amount').value = '';
+
+    document.getElementById('commentary').innerHTML =
+      `<strong>🤖 NamazuBot (${role}) says:</strong> ${getRoleComment(role, amount, recipient)}`;
+
+    transferChart.data.labels.push(time);
+    transferChart.data.datasets[0].data.push(transferCount);
+    transferChart.update();
+
+    updateQuests(amount, recipient);
+  }
+
+  function getRoleComment(role, amount, recipient) {
+    const lines = {
+      Alchemist: [
+        `“The formula is simple: ${amount} GILC = more power.”`,
+        `“You transmute coin into control, ${recipient} will understand soon.”`
+      ],
+      Bard: [
+        `“A ballad for ${recipient}, paid in ${amount} GILC.”`,
+        `“Your trade sings across the charts. Bravo!”`
+      ],
+      Paladin: [
+        `“Another just cause served. ${amount} GILC delivered honorably.”`,
+        `“Even coin must be shielded from corruption.”`
+      ],
+      Rogue: [
+        `“Nobody will trace ${amount} GILC to ${recipient}. Probably.”`,
+        `“Quick hands. No questions.”`
+      ],
+      Scholar: [
+        `“In theory, this ${amount} GILC transfer creates a chain reaction of yield.”`,
+        `“Your thesis on coin distribution is... adequate.”`
+      ]
+    };
+    const roleQuotes = lines[role] || [`“Transaction complete.”`];
+    return roleQuotes[Math.floor(Math.random() * roleQuotes.length)];
+  }
+</script>
 </body>
 </html>

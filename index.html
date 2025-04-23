@@ -375,12 +375,7 @@ function showClassPrompt() {
     function enterApp() {
   const selected = document.getElementById("classSelectorPrompt").value;
   window.selectedClass = selected;
-  applyClassTheme(selected);
-
-  const chooseVoice = document.getElementById("chooseClassVoice");
-  chooseVoice.play().catch((e) => {
-    console.warn("Choose voice playback failed:", e);
-  });
+  applyClassTheme(selected)
 
   document.getElementById("classPrompt").style.display = "none";
   document.getElementById("mainApp").style.display = "block";

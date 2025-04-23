@@ -381,6 +381,7 @@
 
     // Play ambient background music
     const ambient = document.getElementById("ambient");
+    ambient.play().catch(e => console.warn("Ambient playback failed:", e));
     ambientAudio.volume = 0; // Start silent
     ambientAudio.play().then(() => {
         // Gradually fade in the volume

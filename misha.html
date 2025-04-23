@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GilCoin (GILC) - FFXIV Edition</title>
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+          font-family: 'Quicksand', sans-serif;
+          background: linear-gradient(to bottom right, #fef6f0, #f9f1f3);
+          color: #5e5e5e;
+          padding: 30px;
+          max-width: 820px;
+          margin: auto;
+          border-radius: 12px;
+          opacity: 0;
+          transition: opacity 0.6s ease;
+        }
+
+        h1 {
+          font-size: 24px;
+          color: #a67873;
+          text-align: center;
+          margin-bottom: 10px;
+          letter-spacing: 1px;
+        }
+
+        h1 img {
+          height: 50px;
+          border-radius: 10px;
+          vertical-align: middle;
+          margin-right: 10px;
+        }
+
+        input, select, button {
+          padding: 12px;
+          margin: 6px 0;
+          width: 100%;
+          font-size: 16px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+          font-family: inherit;
+        }
+
+        button {
+          background-color: #a67873;
+          color: white;
+          font-weight: bold;
+          border: none;
+          cursor: pointer;
+        }
+
+        button:hover {
+          opacity: 0.9;
+        }
+
+        .log, .balance, .metrics, .intro, .chart-container, #questsSection, #classQuestSection, #classInfoSection {
+          background: #ffffffdd;
+          border-left: 5px solid #a67873;
+          padding: 15px;
+          margin-bottom: 15px;
+          border-radius: 10px;
+        }
+
+        .log {
+          height: 200px;
+          overflow-y: auto;
+          font-size: 14px;
+        }
+
+        .commentary {
+          background: linear-gradient(to right, #fbe3d4, #ffe6ec);
+          border: 2px solid #e3a899;
+          color: #5c2e28;
+          font-style: italic;
+          font-size: 15px;
+          padding: 14px;
+          border-radius: 12px;
+          margin-top: 10px;
+        }
+
+        .chart-container canvas {
+          background-color: white;
+          border-radius: 5px;
+        }
+
+        #onboarding {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: linear-gradient(to right, #3e2723, #5d4037);
+          color: #fce4ec;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          z-index: 1000;
+          padding: 40px;
+          text-align: center;
+          font-family: 'Quicksand', serif;
+        }
+
+        #onboarding h2 {
+          font-size: 28px;
+          margin-bottom: 20px;
+        }
+
+        #onboarding p {
+          max-width: 600px;
+          font-size: 18px;
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+
+        #beginBtn {
+          padding: 12px 30px;
+          background-color: #ffab91;
+          color: #3e2723;
+          border: none;
+          font-size: 16px;
+          border-radius: 10px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        #beginBtn:hover {
+          background-color: #ff8a65;
+        }
+
+        #sideMenu button {
+          background: #d7ccc8;
+          color: #3e2723;
+          width: 100%;
+          border: none;
+          padding: 10px;
+          margin: 10px 0;
+          font-weight: bold;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+
+        .quest {
+          margin-bottom: 12px;
+          padding: 10px;
+          border-left: 4px solid #a67873;
+          background: #fef0f4;
+          border-radius: 8px;
+          font-size: 15px;
+        }
+
+        .quest.completed {
+          background: #e0f2f1;
+          border-left-color: #66bb6a;
+          color: #2e7d32;
+          font-weight: bold;
+        }
+
+        .typewriterContainer {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+    </style>
+</head>
+<body>
+<!-- Ambient music -->
+<audio id="ambient" src="ambient.mp3" loop></audio>
+
+<!-- 🧙 Merchant Intro (Moved above onboarding) -->
+<div id="mainMenu">
+    <h1>Welcome to GilCoin</h1>
+    <button onclick="startLore()">Start Game</button>
+</div>
+
+<!-- 🧾 Onboarding Scroll -->
+<div id="onboarding" style="display: none;">
+    <h2>📜 The Namazu Scroll Says:</h2>
+    <div class="typewriterContainer">
+    <p id="loreText">Initializing lore...</p>
+    </div>
+    <audio id="loreVoice" src="y'shtolaopening.wav"></audio>
+    <button id="beginBtn" onclick="showClassPrompt()">Begin Trading</button>
+</div>
+
+
+<!-- 🛡️ Class Selection Prompt -->
+<div id="classPrompt" style="display: none; text-align: center; padding: 40px;">
+    <h2>Register Your Character</h2>
+    <p>Enter your FFXIV character details and choose a class to begin:</p>
+    <audio id="chooseClassVoice" src="y'shtolachoose.wav"></audio>
+    <input id="onboardingCharacterName" placeholder="Character Name" required style="max-width: 300px;" /><br><br>
+
+    <select id="onboardingCharacterRace" style="max-width: 300px;" required>
+        <option value="" disabled selected>Select Race</option>
+        <option value="Hyur">Hyur</option>
+        <option value="Elezen">Elezen</option>
+        <option value="Lalafell">Lalafell</option>
+        <option value="Miqo'te">Miqo'te</option>
+        <option value="Roegadyn">Roegadyn</option>
+        <option value="Au Ra">Au Ra</option>
+        <option value="Viera">Viera</option>
+        <option value="Hrothgar">Hrothgar</option>
+    </select><br><br>
+
+    <select id="classSelectorPrompt" style="max-width: 300px;" required>
+        <option value="" disabled selected>Select Class</option>
+        <option value="Alchemist">🔮 Alchemist</option>
+        <option value="Bard">🎵 Bard</option>
+        <option value="Paladin">🛡️ Paladin</option>
+        <option value="Rogue">🗡️ Rogue</option>
+        <option value="Scholar">📚 Scholar</option>
+    </select><br><br>
+
+    <button onclick="enterApp()">Enter GilCoin World</button>
+</div>
+
+<!-- 💱 Main GilCoin App -->
+<div id="mainApp" style="display: none;">
+
+    <!-- ☰ Hamburger Menu Button -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 999;">
+        <button onclick="toggleMenu()" style="padding: 10px 14px; font-size: 18px; border-radius: 6px;">☰</button>
+    </div>
+
+    <!-- 🔒 Sliding Menu Panel -->
+    <div id="sideMenu" style="
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 260px;
+    height: 100%;
+    background: #fef0f4;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    transition: right 0.4s ease;
+    padding: 20px;
+    z-index: 1000;
+  ">
+        <h3>📂 Menu</h3>
+        <button onclick="toggleSection('questsSection')">🧙 Trading Quests</button>
+        <button onclick="toggleSection('classQuestSection')">🎯 Class Quest</button>
+        <button onclick="toggleSection('chartSection')">📈 Transfer Chart</button>
+        <button onclick="toggleSection('classInfoSection')">📘 Class Info</button>
+        <button onclick="toggleSection('registerCharacterSection')">📝 Register Character</button>
+        <button onclick="toggleSection('aboutSection')">📜 About GilCoin</button>
+    </div>
+
+    <!-- GilCoin Header -->
+    <h1>
+        <img src="gilcoin-logo.png" alt="GilCoin Logo">
+        GilCoin (GILC) – Fantasy Finance for FFXIV Fans
+    </h1>
+
+    <!-- 🔍 About Section -->
+    <div class="intro" id="aboutSection" style="display: none;">
+        <h3>🌸 A Mindfully Minted Currency</h3>
+        <p>GilCoin (GILC) is a lore-driven, educationally delightful memecoin simulator. Transfer tokens, view real-time graphs, and let NamazuBot guide you with class-based wisdom.</p>
+    </div>
+
+    <!-- 💰 Balance Overview -->
+    <div class="balance">
+        <strong>Supplier Address:</strong> <span id="owner">0xSUPPLIER123</span><br/>
+        <strong>Balance:</strong> <span id="ownerBalance">1000000</span> GILC
+    </div>
+
+    <!-- 📊 Metrics -->
+    <div class="metrics">
+        🧑‍🤝‍🧑 <strong>Total Unique Holders:</strong> <span id="holderCount">0</span><br>
+        🔁 <strong>Total Transfers:</strong> <span id="transferCount">0</span>
+    </div>
+
+    <!-- 📨 Transaction Form -->
+    <h3>Send GilCoin</h3>
+    <input type="text" id="recipient" placeholder="Recipient Address" />
+    <input type="number" id="amount" placeholder="Amount to Send" />
+    <button onclick="sendGilCoin()">Send GILC</button>
+
+    <!-- 📜 Transaction Log -->
+    <div class="log" id="log">
+        <em>Transaction log will appear here...</em>
+    </div>
+
+    <!-- 🤖 NamazuBot Commentary -->
+    <div class="commentary" id="commentary">
+        <em>NamazuBot is observing the market in silence...</em>
+    </div>
+
+    <!-- 📈 Transfer Chart (Hidden by Default) -->
+    <div class="chart-container" id="chartSection" style="display: none;">
+        <h3>📈 Transfers Over Time</h3>
+        <canvas id="transferChart" height="150"></canvas>
+    </div>
+
+    <!-- 🧙 General Quests (Hidden by Default) -->
+    <div id="questsSection" style="display: none;">
+        <div class="chart-container">
+            <h3>🧙 Trading Quests</h3>
+            <div id="quest1" class="quest">Complete 5 transfers (Progress: <span id="q1Progress">0</span>/5)</div>
+            <div id="quest2" class="quest">Send to 3 unique addresses (Progress: <span id="q2Progress">0</span>/3)</div>
+            <div id="quest3" class="quest">Transfer a total of 300 GILC (Progress: <span id="q3Progress">0</span>/300)</div>
+        </div>
+    </div>
+
+    <!-- 🎯 Class-Based Quest Section -->
+    <div class="chart-container" id="classQuestSection" style="display: none;">
+        <h3>🎯 Your Class Quest</h3>
+        <div id="classQuestContent"><em>Complete at least one transfer to see your mission...</em></div>
+    </div>
+
+    <!-- 📘 Class Role Info -->
+    <div class="chart-container" id="classInfoSection" style="display: none;">
+        <h3>📘 GilCoin Class Roles</h3>
+        <ul>
+            <li><strong>🔮 Alchemist:</strong> Every 3rd transfer earns +20 GILC. Sparkling UI effects.</li>
+            <li><strong>🛡️ Paladin:</strong> Bonus +10 GILC when sending exactly 200. UI glows golden.</li>
+            <li><strong>🗡️ Rogue:</strong> Special NamazuBot comments on 100+ transfers. Dark UI theme.</li>
+            <li><strong>🎵 Bard:</strong> Emoji-rich commentary and melodic FX. Smooth visuals.</li>
+            <li><strong>📚 Scholar:</strong> Unlocks smart hints after transfers. Clean UI style.</li>
+        </ul>
+    </div>
+
+</div> <!-- closes #mainApp -->
+<script>
+function startLore() {
+// Hide main menu, show lore screen
+document.getElementById("mainMenu").style.display = "none";
+document.getElementById("onboarding").style.display = "block";
+
+// Play lore voice
+const loreVoice = document.getElementById("loreVoice");
+loreVoice.play().catch(e => console.warn("Couldn't play lore voice:", e));
+
+// Start typewriter effect (comment out if undefined)
+// typeWriter();
+}
+    // --- Lore Typewriter Effect ---
+    const lore = `In the year of the Crystal Bull, when Rowena's vaults overflowed and the glam merchants whispered of rebellion... a coin was minted.
+
+  GilCoin — a currency forged not by moguls, but by meme. Backed not by gold, but by ambition.
+
+  Now you, trader of fate, have been summoned.
+
+  Will you hold? Will you sell? Or will you become a legend of the GilChain?`;
+
+    let i = 0;
+    function typeWriter() {
+      const target = document.getElementById("loreText");
+      if (i < lore.length) {
+        target.textContent += lore.charAt(i);
+        i++;
+        setTimeout(typeWriter, 35);
+      }
+    }
+
+function showClassPrompt() {
+  // Hide onboarding, show class prompt
+  document.getElementById("onboarding").style.display = "none";
+  document.getElementById("classPrompt").style.display = "block";
+
+  // Play choose class voice line (Y'shtola)
+  const voice = document.getElementById("chooseClassVoice");
+  voice.play().catch((e) => {
+    console.warn("Choose class voice couldn't play:", e);
+  });
+
+  // Start typewriter effect
+  typeWriter();
+}
+
+
+    function enterApp() {
+  const selected = document.getElementById("classSelectorPrompt").value;
+  window.selectedClass = selected;
+  applyClassTheme(selected);
+
+  const chooseVoice = document.getElementById("chooseClassVoice");
+  chooseVoice.play().catch((e) => {
+    console.warn("Choose voice playback failed:", e);
+  });
+
+  document.getElementById("classPrompt").style.display = "none";
+  document.getElementById("mainApp").style.display = "block";
+}
+
+    function applyClassTheme(cls) {
+     if (cls === "Rogue") {
+    document.body.style.background = "linear-gradient(to bottom right, #2e2e2e, #3e3e3e)";
+    document.body.style.color = "#ffffff";
+
+    // Optional: soften the block backgrounds for Rogue
+    document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container')
+      .forEach(el => el.style.background = '#444');
+
+      } else if (cls === "Paladin") {
+        document.body.style.background = "linear-gradient(to right, #fff8e1, #ffe0b2)";
+      } else if (cls === "Alchemist") {
+        document.body.style.background = "linear-gradient(to bottom right, #f3e5f5, #f8bbd0)";
+      } else if (cls === "Bard") {
+        document.body.style.background = "linear-gradient(to bottom right, #fce4ec, #e1f5fe)";
+      } else {
+        document.body.style.background = "linear-gradient(to bottom right, #fef6f0, #f9f1f3)";
+      }
+    }
+
+    window.onload = () => {
+      typeWriter();
+      document.body.style.opacity = '1';
+    };
+
+    function toggleMenu() {
+      const menu = document.getElementById("sideMenu");
+      menu.style.right = menu.style.right === "0px" ? "-280px" : "0px";
+    }
+
+    function toggleSection(id) {
+      const sections = ["chartSection", "questsSection", "aboutSection", "classInfoSection", "classQuestSection"];
+      sections.forEach(sec => {
+        document.getElementById(sec).style.display = (sec === id) ? "block" : "none";
+      });
+      toggleMenu();
+    }
+
+    // --- GilCoin Logic ---
+    let balances = { '0xSUPPLIER123': 1000000 };
+    let transferCount = 0;
+    let uniqueHolders = new Set();
+    let transferHistory = [];
+
+    let questProgress = {
+      transfers: 0,
+      uniqueAddresses: new Set(),
+      totalSent: 0,
+      completed: [false, false, false]
+    };
+
+    const ctx = document.getElementById('transferChart').getContext('2d');
+    const transferChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Transfers',
+          data: [],
+          borderColor: '#a67873',
+          backgroundColor: 'rgba(166, 120, 115, 0.2)',
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Time' } },
+          y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        }
+      }
+    });
+
+    function awardQuest(index, questId) {
+      questProgress.completed[index] = true;
+      balances['0xSUPPLIER123'] += 50;
+      document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+      const questEl = document.getElementById(questId);
+      questEl.classList.add("completed");
+      questEl.innerHTML += ` ✅ +50 GILC Rewarded!`;
+    }
+
+    function updateQuests(amount, recipient) {
+      questProgress.transfers++;
+      questProgress.totalSent += amount;
+      questProgress.uniqueAddresses.add(recipient);
+
+      document.getElementById('q1Progress').textContent = questProgress.transfers;
+      document.getElementById('q2Progress').textContent = questProgress.uniqueAddresses.size;
+      document.getElementById('q3Progress').textContent = questProgress.totalSent;
+
+      if (!questProgress.completed[0] && questProgress.transfers >= 5) awardQuest(0, 'quest1');
+      if (!questProgress.completed[1] && questProgress.uniqueAddresses.size >= 3) awardQuest(1, 'quest2');
+      if (!questProgress.completed[2] && questProgress.totalSent >= 300) awardQuest(2, 'quest3');
+    }
+
+    function getClassQuestResult(amount, recipient) {
+      const role = window.selectedClass;
+      let complete = false;
+      let questText = "";
+
+      if (role === "Paladin" && amount === 200) {
+        balances['0xSUPPLIER123'] += 10;
+        questText = "🛡️ Paladin Bonus: +10 GILC for just and balanced amount.";
+        complete = true;
+      }
+      if (role === "Alchemist") {
+        transferHistory.push(amount);
+        if (transferHistory.length >= 3 &&
+            transferHistory.slice(-3).every(a => a === transferHistory.slice(-1)[0])) {
+          balances['0xSUPPLIER123'] += 20;
+          questText = "🔮 Alchemist Bonus: +20 GILC for mastering balance!";
+          complete = true;
+        }
+      }
+      if (role === "Rogue" && amount >= 100) {
+        questText = "🗡️ Rogue Insight: That’s a heavy transfer… You sure it’s clean?";
+        complete = true;
+      }
+      if (role === "Scholar") {
+        if (transferCount >= 1) {
+          questText = "📚 Scholar Tip: You’ve activated your budgeting skill!";
+          complete = true;
+        }
+      }
+      if (role === "Bard" && String(amount).endsWith("7")) {
+        questText = "🎵 Bard’s Melody: Beautifully poetic number choice!";
+        complete = true;
+      }
+
+      if (complete) {
+        document.getElementById('classQuestContent').innerHTML = `<div class="quest completed">${questText}</div>`;
+      }
+    }
+
+    function sendGilCoin() {
+      const recipient = document.getElementById('recipient').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const log = document.getElementById('log');
+      const role = window.selectedClass || "Scholar";
+
+      if (!recipient || isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid address and amount.');
+        return;
+      }
+      if (balances['0xSUPPLIER123'] < amount) {
+        alert('Insufficient balance in supplier account.');
+        return;
+      }
+
+      balances['0xSUPPLIER123'] -= amount;
+      balances[recipient] = (balances[recipient] || 0) + amount;
+
+      if (!uniqueHolders.has(recipient)) {
+        uniqueHolders.add(recipient);
+        document.getElementById('holderCount').textContent = uniqueHolders.size;
+      }
+
+      transferCount++;
+      document.getElementById('transferCount').textContent = transferCount;
+      document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.innerHTML = `
+        <strong>[${time}]</strong><br>
+        Sent <strong>${amount} GILC</strong> to <code>${recipient}</code>.<br>
+        New balance of recipient: <strong>${balances[recipient]} GILC</strong><br><br>
+      `;
+      log.prepend(entry);
+
+      document.getElementById('recipient').value = '';
+      document.getElementById('amount').value = '';
+
+      updateQuests(amount, recipient);
+      getClassQuestResult(amount, recipient);
+
+      document.getElementById('commentary').innerHTML =
+        `<strong>🤖 NamazuBot (${role}) says:</strong> ${getRoleComment(role, amount, recipient)}`;
+
+      transferChart.data.labels.push(time);
+      transferChart.data.datasets[0].data.push(transferCount);
+      transferChart.update();
+    }
+
+    function getRoleComment(role, amount, recipient) {
+      const lines = {
+        Alchemist: [
+          `“The formula is simple: ${amount} GILC = more power.”`,
+          `“You transmute coin into control, ${recipient} will understand soon.”`
+        ],
+        Bard: [
+          `“A ballad for ${recipient}, paid in ${amount} GILC 🎵”`,
+          `“Your trade sings across the charts. Bravo!”`
+        ],
+        Paladin: [
+          `“Another just cause served. ${amount} GILC delivered honorably.”`,
+          `“Even coin must be shielded from corruption.”`
+        ],
+        Rogue: [
+          `“Nobody will trace ${amount} GILC to ${recipient}. Probably.”`,
+          `“Quick hands. No questions.”`
+        ],
+        Scholar: [
+          `“In theory, this ${amount} GILC transfer creates a chain reaction of yield.”`,
+          `“Your thesis on coin distribution is... adequate.”`
+        ]
+      };
+      const roleQuotes = lines[role] || [`“Transaction complete.”`];
+      return roleQuotes[Math.floor(Math.random() * roleQuotes.length)];
+    }
+</script>
+</body>
+</html>

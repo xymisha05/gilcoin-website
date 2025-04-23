@@ -166,6 +166,21 @@
   margin: 0 auto;
   text-align: center;
 }
+        .rogue-glow {
+  box-shadow: 0 0 12px #8e44ad;
+}
+
+.bard-glow {
+  animation: pulseGlow 3s infinite;
+  box-shadow: 0 0 10px #42a5f5;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 8px #42a5f5; }
+  50% { box-shadow: 0 0 16px #42a5f5; }
+  100% { box-shadow: 0 0 8px #42a5f5; }
+}
+
     </style>
 </head>
 <body>
@@ -412,49 +427,63 @@ document.getElementById("classSelectorPrompt").addEventListener("change", functi
     }
 
         function applyClassTheme(cls) {
-  const body = document.body;
-  const themedElements = document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container');
+  // Reset all glow effects first
+  document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container')
+    .forEach(el => el.classList.remove('glow', 'bard-glow', 'rogue-glow'));
 
-  const themes = {
-    Rogue: {
-      background: "linear-gradient(to bottom right, #1c1c1c, #2e2e2e)",
-      color: "#e0e0e0",
-      blockBg: "#333",
-    },
-    Paladin: {
-      background: "linear-gradient(to right, #fffbe6, #ffe8c4)",
-      color: "#4b3b2a",
-      blockBg: "#fef1dc",
-    },
-    Alchemist: {
-      background: "linear-gradient(to bottom right, #e8eaf6, #fce4ec)",
-      color: "#4527a0",
-      blockBg: "#f3e5f5",
-    },
-    Bard: {
-      background: "linear-gradient(to bottom right, #f8bbd0, #b3e5fc)",
-      color: "#3f51b5",
-      blockBg: "#fce4ec",
-    },
-    Scholar: {
-      background: "linear-gradient(to bottom right, #e3f2fd, #e8f5e9)",
-      color: "#2e7d32",
-      blockBg: "#ffffff",
-    },
-    Default: {
-      background: "linear-gradient(to bottom right, #f5f5f5, #ffffff)",
-      color: "#333",
-      blockBg: "#ffffff",
-    }
-  };
+  if (cls === "Rogue") {
+    document.body.style.background = "linear-gradient(to bottom right, #2e2e2e, #3e3e3e)";
+    document.body.style.color = "#ffffff";
+    document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container')
+      .forEach(el => el.style.background = '#444');
 
-  const theme = themes[cls] || themes.Default;
+    // Rogue passive: sneaky highlight
+    document.querySelectorAll('.log, .balance').forEach(el => {
+      el.addEventListener('mouseover', () => el.classList.add('rogue-glow'));
+      el.addEventListener('mouseout', () => el.classList.remove('rogue-glow'));
+    });
 
-  body.style.background = theme.background;
-  body.style.color = theme.color;
+  } else if (cls === "Paladin") {
+    document.body.style.background = "linear-gradient(to right, #fff8e1, #ffe0b2)";
+    document.body.style.color = "#000";
+    // Paladin passive: hover shield aura
+    document.querySelectorAll('.metrics, .chart-container').forEach(el => {
+      el.title = "Paladin’s Aura: Reduces corruption chance on transfers.";
+    });
 
-  themedElements.forEach(el => el.style.background = theme.blockBg);
+  } else if (cls === "Alchemist") {
+    document.body.style.background = "linear-gradient(to bottom right, #f3e5f5, #f8bbd0)";
+    document.querySelectorAll('.log, .balance, .metrics')
+      .forEach(el => el.style.filter = "hue-rotate(20deg)");
+    // Alchemist passive: hover reveals conversion insight
+    document.querySelectorAll('.balance').forEach(el => {
+      el.title = "Alchemist Insight: Shows potential yield value.";
+    });
+
+  } else if (cls === "Bard") {
+    document.body.style.background = "linear-gradient(to bottom right, #fce4ec, #e1f5fe)";
+    document.querySelectorAll('.log, .intro')
+      .forEach(el => el.classList.add('bard-glow'));
+    // Bard passive: hover reveals poetic tooltip
+    document.querySelectorAll('.log').forEach(el => {
+      el.title = "Bard’s Song: Your transactions echo through legend.";
+    });
+
+  } else if (cls === "Scholar") {
+    document.body.style.background = "linear-gradient(to bottom right, #e8f5e9, #f3f9f1)";
+    document.body.style.color = "#000";
+    // Scholar passive: show theory popups on charts
+    document.querySelectorAll('.chart-container').forEach(el => {
+      el.title = "Scholar Hypothesis: Visual patterns predict the market.";
+    });
+  } else {
+    document.body.style.background = "linear-gradient(to bottom right, #fef6f0, #f9f1f3)";
+  }
+
+  // Save the selected class globally
+  window.selectedClass = cls;
 }
+
 
         window.onload = () => {
           typeWriter();
@@ -549,19 +578,16 @@ function launchConfetti() {
             questText = "🛡️ Paladin Bonus: +10 GILC for just and balanced amount.";
             complete = true;
           }
-          if (role === "Alchemist") {
-            transferHistory.push(amount);
-            if (transferHistory.length >= 3 &&
-                transferHistory.slice(-3).every(a => a === transferHistory.slice(-1)[0])) {
-              balances['0xSUPPLIER123'] += 20;
-              questText = "🔮 Alchemist Bonus: +20 GILC for mastering balance!";
-              complete = true;
-            }
-          }
+if (role === "Alchemist" && transferHistory.slice(-3).every(a => a === amount)) {
+  questText = "🔮 Alchemist Bonus: Transmutation loop achieved!";
+  balances['0xSUPPLIER123'] += 20;
+  complete = true;
+}
           if (role === "Rogue" && amount >= 100) {
-            questText = "🗡️ Rogue Insight: That’s a heavy transfer… You sure it’s clean?";
-            complete = true;
-          }
+  questText = "🗡️ Rogue Insight: That's a heavy transfer… Stealth bonus engaged!";
+  balances['0xSUPPLIER123'] += 5; // Rogue side-bonus
+  complete = true;
+}
           if (role === "Scholar") {
             if (transferCount >= 1) {
               questText = "📚 Scholar Tip: You’ve activated your budgeting skill!";
@@ -569,9 +595,11 @@ function launchConfetti() {
             }
           }
           if (role === "Bard" && String(amount).endsWith("7")) {
-            questText = "🎵 Bard’s Melody: Beautifully poetic number choice!";
-            complete = true;
-          }
+  questText = "🎵 Bard’s Melody: You struck the sacred seventh. Bonus applied!";
+  balances['0xSUPPLIER123'] += 7;
+  complete = true;
+}
+
 
           if (complete) {
             document.getElementById('classQuestContent').innerHTML = `<div class="quest completed">${questText}</div>`;

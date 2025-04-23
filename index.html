@@ -375,38 +375,25 @@
 
         function enterApp() {
       function enterApp() {
-    // Hide onboarding and show main app
+    // Hide the class prompt and show the main app
     document.getElementById("classPrompt").style.display = "none";
     document.getElementById("mainApp").style.display = "block";
 
-    // Fade in body
-    document.body.style.opacity = 1;
-
-    const ambient = document.getElementById("ambient");
-
-    ambient.volume = 0; // Start at 0 volume
-
-    ambient.loop = true;
-
-    ambient.play().then(() => {
-        const targetVolume = 0.4;
-        const fadeDuration = 3000; // in ms
-        const steps = 30;
-        const stepTime = fadeDuration / steps;
-        const volumeStep = targetVolume / steps;
-
-        let currentStep = 0;
-        const fadeInterval = setInterval(() => {
-            currentStep++;
-            ambient.volume = Math.min(targetVolume, ambient.Volume + volumeStep);
-
-            if (currentStep >= steps) {
-                clearInterval(fadeInterval);
+    // Play ambient background music
+    const ambientAudio = document.getElementById("ambient");
+    ambientAudio.volume = 0; // Start silent
+    ambientAudio.play().then(() => {
+        // Gradually fade in the volume
+        let volume = 0;
+        const fadeIn = setInterval(() => {
+            if (volume < 1) {
+                volume += 0.05;
+                ambientAudio.volume = Math.min(volume, 1);
+            } else {
+                clearInterval(fadeIn);
             }
-        }, stepTime);
-    }).catch(error => {
-        console.warn("Ambient music couldn't play automatically:", error);
-    });
+        }, 200); // Increase volume every 200ms
+    }).catch(e => console.warn("Couldn't play ambient audio:", e));
 }
 
       document.getElementById("classPrompt").style.display = "none";

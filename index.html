@@ -168,9 +168,6 @@
     </style>
 </head>
 <body>
-<!-- Ambient music -->
-<audio id="ambient" src="ambient.mp3" loop></audio>
-
 <!-- 🧙 Merchant Intro (Moved above onboarding) -->
 <div id="mainMenu">
     <h1>Welcome to GilCoin</h1>
@@ -181,7 +178,7 @@
 <div id="onboarding" style="display: none;">
     <h2>📜 The Namazu Scroll Says:</h2>
     <div class="typewriterContainer">
-    <p id="loreText">Initializing lore...</p>
+        <p id="loreText">Initializing lore...</p>
     </div>
     <audio id="loreVoice" src="y'shtolaopening.mp3"></audio>
     <button id="beginBtn" onclick="showClassPrompt()">Begin Trading</button>
@@ -221,6 +218,10 @@
 
 <!-- 💱 Main GilCoin App -->
 <div id="mainApp" style="display: none;">
+
+<!-- Ambient music -->
+<audio id="ambient" src="ambient.mp3" loop></audio>
+
 
     <!-- ☰ Hamburger Menu Button -->
     <div style="position: fixed; top: 20px; right: 20px; z-index: 999;">
@@ -325,273 +326,304 @@
 
 </div> <!-- closes #mainApp -->
 <script>
-function startLore() {
-// Hide main menu, show lore screen
-document.getElementById("mainMenu").style.display = "none";
-document.getElementById("onboarding").style.display = "block";
+    function startLore() {
+    // Hide main menu, show lore screen
+    document.getElementById("mainMenu").style.display = "none";
+    document.getElementById("onboarding").style.display = "block";
 
-// Play lore voice
-const loreVoice = document.getElementById("loreVoice");
-loreVoice.play().catch(e => console.warn("Couldn't play lore voice:", e));
+    // Play lore voice
+    const loreVoice = document.getElementById("loreVoice");
+    loreVoice.play().catch(e => console.warn("Couldn't play lore voice:", e));
 
-// Start typewriter effect (comment out if undefined)
-// typeWriter();
-}
-    // --- Lore Typewriter Effect ---
-    const lore = `In the year of the Crystal Bull, when Rowena's vaults overflowed and the glam merchants whispered of rebellion... a coin was minted.
-
-  GilCoin — a currency forged not by moguls, but by meme. Backed not by gold, but by ambition.
-
-  Now you, trader of fate, have been summoned.
-
-  Will you hold? Will you sell? Or will you become a legend of the GilChain?`;
-
-    let i = 0;
-    function typeWriter() {
-      const target = document.getElementById("loreText");
-      if (i < lore.length) {
-        target.textContent += lore.charAt(i);
-        i++;
-        setTimeout(typeWriter, 35);
-      }
+    // Start typewriter effect (comment out if undefined)
+    // typeWriter();
     }
+        // --- Lore Typewriter Effect ---
+        const lore = `In the year of the Crystal Bull, when Rowena's vaults overflowed and the glam merchants whispered of rebellion... a coin was minted.
 
-function showClassPrompt() {
-  // Hide onboarding, show class prompt
-  document.getElementById("onboarding").style.display = "none";
-  document.getElementById("classPrompt").style.display = "block";
+      GilCoin — a currency forged not by moguls, but by meme. Backed not by gold, but by ambition.
 
-  // Play choose class voice line (Y'shtola)
-  const voice = document.getElementById("chooseClassVoice");
-  voice.play().catch((e) => {
-    console.warn("Choose class voice couldn't play:", e);
-  });
+      Now you, trader of fate, have been summoned.
 
-  // Start typewriter effect
-  typeWriter();
-}
+      Will you hold? Will you sell? Or will you become a legend of the GilChain?`;
 
+        let i = 0;
+        function typeWriter() {
+          const target = document.getElementById("loreText");
+          if (i < lore.length) {
+            target.textContent += lore.charAt(i);
+            i++;
+            setTimeout(typeWriter, 35);
+          }
+        }
 
-    function enterApp() {
-  const selected = document.getElementById("classSelectorPrompt").value;
-  window.selectedClass = selected;
-  applyClassTheme(selected)
+    function showClassPrompt() {
+      // Hide onboarding, show class prompt
+      document.getElementById("onboarding").style.display = "none";
+      document.getElementById("classPrompt").style.display = "block";
 
-  document.getElementById("classPrompt").style.display = "none";
-  document.getElementById("mainApp").style.display = "block";
-}
-
-    function applyClassTheme(cls) {
-     if (cls === "Rogue") {
-    document.body.style.background = "linear-gradient(to bottom right, #2e2e2e, #3e3e3e)";
-    document.body.style.color = "#ffffff";
-
-    // Optional: soften the block backgrounds for Rogue
-    document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container')
-      .forEach(el => el.style.background = '#444');
-
-      } else if (cls === "Paladin") {
-        document.body.style.background = "linear-gradient(to right, #fff8e1, #ffe0b2)";
-      } else if (cls === "Alchemist") {
-        document.body.style.background = "linear-gradient(to bottom right, #f3e5f5, #f8bbd0)";
-      } else if (cls === "Bard") {
-        document.body.style.background = "linear-gradient(to bottom right, #fce4ec, #e1f5fe)";
-      } else {
-        document.body.style.background = "linear-gradient(to bottom right, #fef6f0, #f9f1f3)";
-      }
-    }
-
-    window.onload = () => {
-      typeWriter();
-      document.body.style.opacity = '1';
-    };
-
-    function toggleMenu() {
-      const menu = document.getElementById("sideMenu");
-      menu.style.right = menu.style.right === "0px" ? "-280px" : "0px";
-    }
-
-    function toggleSection(id) {
-      const sections = ["chartSection", "questsSection", "aboutSection", "classInfoSection", "classQuestSection"];
-      sections.forEach(sec => {
-        document.getElementById(sec).style.display = (sec === id) ? "block" : "none";
+      // Play choose class voice line (Y'shtola)
+      const voice = document.getElementById("chooseClassVoice");
+      voice.play().catch((e) => {
+        console.warn("Choose class voice couldn't play:", e);
       });
-      toggleMenu();
+
+      // Start typewriter effect
+      typeWriter();
     }
 
-    // --- GilCoin Logic ---
-    let balances = { '0xSUPPLIER123': 1000000 };
-    let transferCount = 0;
-    let uniqueHolders = new Set();
-    let transferHistory = [];
 
-    let questProgress = {
-      transfers: 0,
-      uniqueAddresses: new Set(),
-      totalSent: 0,
-      completed: [false, false, false]
-    };
+        function enterApp() {
+      function enterApp() {
+    // Hide onboarding and show main app
+    document.getElementById("classPrompt").style.display = "none";
+    document.getElementById("mainApp").style.display = "block";
 
-    const ctx = document.getElementById('transferChart').getContext('2d');
-    const transferChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Transfers',
-          data: [],
-          borderColor: '#a67873',
-          backgroundColor: 'rgba(166, 120, 115, 0.2)',
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: { title: { display: true, text: 'Time' } },
-          y: { beginAtZero: true, ticks: { stepSize: 1 } }
-        }
-      }
+    // Fade in body
+    document.body.style.opacity = 1;
+
+    const ambient = document.getElementById("ambient");
+
+    ambient.volume = 0; // Start at 0 volume
+
+    ambient.loop = true;
+
+    ambient.play().then(() => {
+        const targetVolume = 0.4;
+        const fadeDuration = 3000; // in ms
+        const steps = 30;
+        const stepTime = fadeDuration / steps;
+        const volumeStep = targetVolume / steps;
+
+        let currentStep = 0;
+        const fadeInterval = setInterval(() => {
+            currentStep++;
+            ambient.volume = Math.min(targetVolume, ambient.Volume + volumeStep);
+
+            if (currentStep >= steps) {
+                clearInterval(fadeInterval);
+            }
+        }, stepTime);
+    }).catch(error => {
+        console.warn("Ambient music couldn't play automatically:", error);
     });
+}
 
-    function awardQuest(index, questId) {
-      questProgress.completed[index] = true;
-      balances['0xSUPPLIER123'] += 50;
-      document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
-      const questEl = document.getElementById(questId);
-      questEl.classList.add("completed");
-      questEl.innerHTML += ` ✅ +50 GILC Rewarded!`;
+      document.getElementById("classPrompt").style.display = "none";
+      document.getElementById("mainApp").style.display = "block";
     }
 
-    function updateQuests(amount, recipient) {
-      questProgress.transfers++;
-      questProgress.totalSent += amount;
-      questProgress.uniqueAddresses.add(recipient);
+        function applyClassTheme(cls) {
+         if (cls === "Rogue") {
+        document.body.style.background = "linear-gradient(to bottom right, #2e2e2e, #3e3e3e)";
+        document.body.style.color = "#ffffff";
 
-      document.getElementById('q1Progress').textContent = questProgress.transfers;
-      document.getElementById('q2Progress').textContent = questProgress.uniqueAddresses.size;
-      document.getElementById('q3Progress').textContent = questProgress.totalSent;
+        // Optional: soften the block backgrounds for Rogue
+        document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container')
+          .forEach(el => el.style.background = '#444');
 
-      if (!questProgress.completed[0] && questProgress.transfers >= 5) awardQuest(0, 'quest1');
-      if (!questProgress.completed[1] && questProgress.uniqueAddresses.size >= 3) awardQuest(1, 'quest2');
-      if (!questProgress.completed[2] && questProgress.totalSent >= 300) awardQuest(2, 'quest3');
-    }
-
-    function getClassQuestResult(amount, recipient) {
-      const role = window.selectedClass;
-      let complete = false;
-      let questText = "";
-
-      if (role === "Paladin" && amount === 200) {
-        balances['0xSUPPLIER123'] += 10;
-        questText = "🛡️ Paladin Bonus: +10 GILC for just and balanced amount.";
-        complete = true;
-      }
-      if (role === "Alchemist") {
-        transferHistory.push(amount);
-        if (transferHistory.length >= 3 &&
-            transferHistory.slice(-3).every(a => a === transferHistory.slice(-1)[0])) {
-          balances['0xSUPPLIER123'] += 20;
-          questText = "🔮 Alchemist Bonus: +20 GILC for mastering balance!";
-          complete = true;
+          } else if (cls === "Paladin") {
+            document.body.style.background = "linear-gradient(to right, #fff8e1, #ffe0b2)";
+          } else if (cls === "Alchemist") {
+            document.body.style.background = "linear-gradient(to bottom right, #f3e5f5, #f8bbd0)";
+          } else if (cls === "Bard") {
+            document.body.style.background = "linear-gradient(to bottom right, #fce4ec, #e1f5fe)";
+          } else {
+            document.body.style.background = "linear-gradient(to bottom right, #fef6f0, #f9f1f3)";
+          }
         }
-      }
-      if (role === "Rogue" && amount >= 100) {
-        questText = "🗡️ Rogue Insight: That’s a heavy transfer… You sure it’s clean?";
-        complete = true;
-      }
-      if (role === "Scholar") {
-        if (transferCount >= 1) {
-          questText = "📚 Scholar Tip: You’ve activated your budgeting skill!";
-          complete = true;
+
+        window.onload = () => {
+          typeWriter();
+          document.body.style.opacity = '1';
+        };
+
+        function toggleMenu() {
+          const menu = document.getElementById("sideMenu");
+          menu.style.right = menu.style.right === "0px" ? "-280px" : "0px";
         }
-      }
-      if (role === "Bard" && String(amount).endsWith("7")) {
-        questText = "🎵 Bard’s Melody: Beautifully poetic number choice!";
-        complete = true;
-      }
 
-      if (complete) {
-        document.getElementById('classQuestContent').innerHTML = `<div class="quest completed">${questText}</div>`;
-      }
-    }
+        function toggleSection(id) {
+          const sections = ["chartSection", "questsSection", "aboutSection", "classInfoSection", "classQuestSection"];
+          sections.forEach(sec => {
+            document.getElementById(sec).style.display = (sec === id) ? "block" : "none";
+          });
+          toggleMenu();
+        }
 
-    function sendGilCoin() {
-      const recipient = document.getElementById('recipient').value.trim();
-      const amount = parseFloat(document.getElementById('amount').value);
-      const log = document.getElementById('log');
-      const role = window.selectedClass || "Scholar";
+        // --- GilCoin Logic ---
+        let balances = { '0xSUPPLIER123': 1000000 };
+        let transferCount = 0;
+        let uniqueHolders = new Set();
+        let transferHistory = [];
 
-      if (!recipient || isNaN(amount) || amount <= 0) {
-        alert('Please enter a valid address and amount.');
-        return;
-      }
-      if (balances['0xSUPPLIER123'] < amount) {
-        alert('Insufficient balance in supplier account.');
-        return;
-      }
+        let questProgress = {
+          transfers: 0,
+          uniqueAddresses: new Set(),
+          totalSent: 0,
+          completed: [false, false, false]
+        };
 
-      balances['0xSUPPLIER123'] -= amount;
-      balances[recipient] = (balances[recipient] || 0) + amount;
+        const ctx = document.getElementById('transferChart').getContext('2d');
+        const transferChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [{
+              label: 'Transfers',
+              data: [],
+              borderColor: '#a67873',
+              backgroundColor: 'rgba(166, 120, 115, 0.2)',
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { title: { display: true, text: 'Time' } },
+              y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+          }
+        });
 
-      if (!uniqueHolders.has(recipient)) {
-        uniqueHolders.add(recipient);
-        document.getElementById('holderCount').textContent = uniqueHolders.size;
-      }
+        function awardQuest(index, questId) {
+          questProgress.completed[index] = true;
+          balances['0xSUPPLIER123'] += 50;
+          document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+          const questEl = document.getElementById(questId);
+          questEl.classList.add("completed");
+          questEl.innerHTML += ` ✅ +50 GILC Rewarded!`;
+        }
 
-      transferCount++;
-      document.getElementById('transferCount').textContent = transferCount;
-      document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+        function updateQuests(amount, recipient) {
+          questProgress.transfers++;
+          questProgress.totalSent += amount;
+          questProgress.uniqueAddresses.add(recipient);
 
-      const time = new Date().toLocaleTimeString();
-      const entry = document.createElement('div');
-      entry.innerHTML = `
-        <strong>[${time}]</strong><br>
-        Sent <strong>${amount} GILC</strong> to <code>${recipient}</code>.<br>
-        New balance of recipient: <strong>${balances[recipient]} GILC</strong><br><br>
-      `;
-      log.prepend(entry);
+          document.getElementById('q1Progress').textContent = questProgress.transfers;
+          document.getElementById('q2Progress').textContent = questProgress.uniqueAddresses.size;
+          document.getElementById('q3Progress').textContent = questProgress.totalSent;
 
-      document.getElementById('recipient').value = '';
-      document.getElementById('amount').value = '';
+          if (!questProgress.completed[0] && questProgress.transfers >= 5) awardQuest(0, 'quest1');
+          if (!questProgress.completed[1] && questProgress.uniqueAddresses.size >= 3) awardQuest(1, 'quest2');
+          if (!questProgress.completed[2] && questProgress.totalSent >= 300) awardQuest(2, 'quest3');
+        }
 
-      updateQuests(amount, recipient);
-      getClassQuestResult(amount, recipient);
+        function getClassQuestResult(amount, recipient) {
+          const role = window.selectedClass;
+          let complete = false;
+          let questText = "";
 
-      document.getElementById('commentary').innerHTML =
-        `<strong>🤖 NamazuBot (${role}) says:</strong> ${getRoleComment(role, amount, recipient)}`;
+          if (role === "Paladin" && amount === 200) {
+            balances['0xSUPPLIER123'] += 10;
+            questText = "🛡️ Paladin Bonus: +10 GILC for just and balanced amount.";
+            complete = true;
+          }
+          if (role === "Alchemist") {
+            transferHistory.push(amount);
+            if (transferHistory.length >= 3 &&
+                transferHistory.slice(-3).every(a => a === transferHistory.slice(-1)[0])) {
+              balances['0xSUPPLIER123'] += 20;
+              questText = "🔮 Alchemist Bonus: +20 GILC for mastering balance!";
+              complete = true;
+            }
+          }
+          if (role === "Rogue" && amount >= 100) {
+            questText = "🗡️ Rogue Insight: That’s a heavy transfer… You sure it’s clean?";
+            complete = true;
+          }
+          if (role === "Scholar") {
+            if (transferCount >= 1) {
+              questText = "📚 Scholar Tip: You’ve activated your budgeting skill!";
+              complete = true;
+            }
+          }
+          if (role === "Bard" && String(amount).endsWith("7")) {
+            questText = "🎵 Bard’s Melody: Beautifully poetic number choice!";
+            complete = true;
+          }
 
-      transferChart.data.labels.push(time);
-      transferChart.data.datasets[0].data.push(transferCount);
-      transferChart.update();
-    }
+          if (complete) {
+            document.getElementById('classQuestContent').innerHTML = `<div class="quest completed">${questText}</div>`;
+          }
+        }
 
-    function getRoleComment(role, amount, recipient) {
-      const lines = {
-        Alchemist: [
-          `“The formula is simple: ${amount} GILC = more power.”`,
-          `“You transmute coin into control, ${recipient} will understand soon.”`
-        ],
-        Bard: [
-          `“A ballad for ${recipient}, paid in ${amount} GILC 🎵”`,
-          `“Your trade sings across the charts. Bravo!”`
-        ],
-        Paladin: [
-          `“Another just cause served. ${amount} GILC delivered honorably.”`,
-          `“Even coin must be shielded from corruption.”`
-        ],
-        Rogue: [
-          `“Nobody will trace ${amount} GILC to ${recipient}. Probably.”`,
-          `“Quick hands. No questions.”`
-        ],
-        Scholar: [
-          `“In theory, this ${amount} GILC transfer creates a chain reaction of yield.”`,
-          `“Your thesis on coin distribution is... adequate.”`
-        ]
-      };
-      const roleQuotes = lines[role] || [`“Transaction complete.”`];
-      return roleQuotes[Math.floor(Math.random() * roleQuotes.length)];
-    }
+        function sendGilCoin() {
+          const recipient = document.getElementById('recipient').value.trim();
+          const amount = parseFloat(document.getElementById('amount').value);
+          const log = document.getElementById('log');
+          const role = window.selectedClass || "Scholar";
+
+          if (!recipient || isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid address and amount.');
+            return;
+          }
+          if (balances['0xSUPPLIER123'] < amount) {
+            alert('Insufficient balance in supplier account.');
+            return;
+          }
+
+          balances['0xSUPPLIER123'] -= amount;
+          balances[recipient] = (balances[recipient] || 0) + amount;
+
+          if (!uniqueHolders.has(recipient)) {
+            uniqueHolders.add(recipient);
+            document.getElementById('holderCount').textContent = uniqueHolders.size;
+          }
+
+          transferCount++;
+          document.getElementById('transferCount').textContent = transferCount;
+          document.getElementById('ownerBalance').textContent = balances['0xSUPPLIER123'];
+
+          const time = new Date().toLocaleTimeString();
+          const entry = document.createElement('div');
+          entry.innerHTML = `
+            <strong>[${time}]</strong><br>
+            Sent <strong>${amount} GILC</strong> to <code>${recipient}</code>.<br>
+            New balance of recipient: <strong>${balances[recipient]} GILC</strong><br><br>
+          `;
+          log.prepend(entry);
+
+          document.getElementById('recipient').value = '';
+          document.getElementById('amount').value = '';
+
+          updateQuests(amount, recipient);
+          getClassQuestResult(amount, recipient);
+
+          document.getElementById('commentary').innerHTML =
+            `<strong>🤖 NamazuBot (${role}) says:</strong> ${getRoleComment(role, amount, recipient)}`;
+
+          transferChart.data.labels.push(time);
+          transferChart.data.datasets[0].data.push(transferCount);
+          transferChart.update();
+        }
+
+        function getRoleComment(role, amount, recipient) {
+          const lines = {
+            Alchemist: [
+              `“The formula is simple: ${amount} GILC = more power.”`,
+              `“You transmute coin into control, ${recipient} will understand soon.”`
+            ],
+            Bard: [
+              `“A ballad for ${recipient}, paid in ${amount} GILC 🎵”`,
+              `“Your trade sings across the charts. Bravo!”`
+            ],
+            Paladin: [
+              `“Another just cause served. ${amount} GILC delivered honorably.”`,
+              `“Even coin must be shielded from corruption.”`
+            ],
+            Rogue: [
+              `“Nobody will trace ${amount} GILC to ${recipient}. Probably.”`,
+              `“Quick hands. No questions.”`
+            ],
+            Scholar: [
+              `“In theory, this ${amount} GILC transfer creates a chain reaction of yield.”`,
+              `“Your thesis on coin distribution is... adequate.”`
+            ]
+          };
+          const roleQuotes = lines[role] || [`“Transaction complete.”`];
+          return roleQuotes[Math.floor(Math.random() * roleQuotes.length)];
+        }
 </script>
 </body>
 </html>

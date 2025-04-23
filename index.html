@@ -7,6 +7,7 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
     <style>
         body {
           font-family: 'Quicksand', sans-serif;
@@ -213,14 +214,14 @@
         <option value="Scholar">📚 Scholar</option>
     </select><br><br>
 
-    <button onclick="enterApp()">Enter GilCoin World</button>
+    <button onclick="enterApp(); applyClassTheme(); launchConfetti();">Enter GilCoin World</button>
 </div>
 
 <!-- 💱 Main GilCoin App -->
 <div id="mainApp" style="display: none;">
 
-<!-- Ambient music -->
-<audio id="ambient" src="https://github.com/xymisha05/gilcoin-website/blob/main/ambient.mp3" loop></audio>
+    <!-- Ambient music -->
+    <audio id="ambient" src="https://github.com/xymisha05/gilcoin-website/blob/main/ambient.mp3" loop></audio>
 
 
     <!-- ☰ Hamburger Menu Button -->
@@ -357,22 +358,31 @@
           }
         }
 
+document.getElementById("classSelectorPrompt").addEventListener("change", function() {
+  const selectedClass = this.value;
+  applyClassTheme(selectedClass);
+});
+
     function showClassPrompt() {
-      // Hide onboarding, show class prompt
-      document.getElementById("onboarding").style.display = "none";
-      document.getElementById("classPrompt").style.display = "block";
+  // Hide onboarding, show class prompt
+  document.getElementById("onboarding").style.display = "none";
+  document.getElementById("classPrompt").style.display = "block";
 
-      // Play choose class voice line (Y'shtola)
-      const voice = document.getElementById("chooseClassVoice");
-      voice.play().catch((e) => {
-        console.warn("Choose class voice couldn't play:", e);
-      });
+  // Play choose class voice line (Y'shtola)
+  const voice = document.getElementById("chooseClassVoice");
+  voice.play().catch((e) => {
+    console.warn("Choose class voice couldn't play:", e);
+  });
 
-      // Start typewriter effect
-      typeWriter();
-    }
+  // Start typewriter effect
+  typeWriter();
 
-
+  // Add event listener to class selector to apply theme on change
+  document.getElementById("classSelectorPrompt").addEventListener("change", function() {
+    const selectedClass = this.value;
+    applyClassTheme(selectedClass);
+  });
+}
         function enterApp() {
       function enterApp() {
     // Hide the class prompt and show the main app
@@ -402,24 +412,49 @@
     }
 
         function applyClassTheme(cls) {
-         if (cls === "Rogue") {
-        document.body.style.background = "linear-gradient(to bottom right, #2e2e2e, #3e3e3e)";
-        document.body.style.color = "#ffffff";
+  const body = document.body;
+  const themedElements = document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container');
 
-        // Optional: soften the block backgrounds for Rogue
-        document.querySelectorAll('.log, .balance, .metrics, .intro, .chart-container')
-          .forEach(el => el.style.background = '#444');
+  const themes = {
+    Rogue: {
+      background: "linear-gradient(to bottom right, #1c1c1c, #2e2e2e)",
+      color: "#e0e0e0",
+      blockBg: "#333",
+    },
+    Paladin: {
+      background: "linear-gradient(to right, #fffbe6, #ffe8c4)",
+      color: "#4b3b2a",
+      blockBg: "#fef1dc",
+    },
+    Alchemist: {
+      background: "linear-gradient(to bottom right, #e8eaf6, #fce4ec)",
+      color: "#4527a0",
+      blockBg: "#f3e5f5",
+    },
+    Bard: {
+      background: "linear-gradient(to bottom right, #f8bbd0, #b3e5fc)",
+      color: "#3f51b5",
+      blockBg: "#fce4ec",
+    },
+    Scholar: {
+      background: "linear-gradient(to bottom right, #e3f2fd, #e8f5e9)",
+      color: "#2e7d32",
+      blockBg: "#ffffff",
+    },
+    Default: {
+      background: "linear-gradient(to bottom right, #f5f5f5, #ffffff)",
+      color: "#333",
+      blockBg: "#ffffff",
+    }
+  };
 
-          } else if (cls === "Paladin") {
-            document.body.style.background = "linear-gradient(to right, #fff8e1, #ffe0b2)";
-          } else if (cls === "Alchemist") {
-            document.body.style.background = "linear-gradient(to bottom right, #f3e5f5, #f8bbd0)";
-          } else if (cls === "Bard") {
-            document.body.style.background = "linear-gradient(to bottom right, #fce4ec, #e1f5fe)";
-          } else {
-            document.body.style.background = "linear-gradient(to bottom right, #fef6f0, #f9f1f3)";
-          }
-        }
+  const theme = themes[cls] || themes.Default;
+
+  body.style.background = theme.background;
+  body.style.color = theme.color;
+
+  themedElements.forEach(el => el.style.background = theme.blockBg);
+}
 
         window.onload = () => {
           typeWriter();
@@ -483,7 +518,14 @@
           questEl.innerHTML += ` ✅ +50 GILC Rewarded!`;
         }
 
-        function updateQuests(amount, recipient) {
+function launchConfetti() {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+}
+    function updateQuests(amount, recipient) {
           questProgress.transfers++;
           questProgress.totalSent += amount;
           questProgress.uniqueAddresses.add(recipient);
@@ -533,8 +575,27 @@
 
           if (complete) {
             document.getElementById('classQuestContent').innerHTML = `<div class="quest completed">${questText}</div>`;
+           triggerConfetti();
           }
         }
+
+        function checkAllQuests() {
+  const quests = ['quest1', 'quest2', 'quest3'];
+  quests.forEach((id, i) => {
+    if (!questProgress.completed[i]) return;
+    const questEl = document.getElementById(id);
+    if (!questEl.classList.contains('completed')) {
+      questEl.classList.add('completed');
+      markQuestCompleted(id);
+      launchConfetti();
+    }
+  });
+}
+        function markQuestCompleted(questId) {
+  const questElement = document.getElementById(questId);
+  questElement.style.background = "#d4edda"; // Green color for completion
+  questElement.innerHTML += ' <span>✅</span>'; // Add a checkmark
+}
 
         function sendGilCoin() {
           const recipient = document.getElementById('recipient').value.trim();

@@ -220,7 +220,7 @@
 <div id="mainApp" style="display: none;">
 
 <!-- Ambient music -->
-<audio id="ambient" src="ambient.mp3" loop></audio>
+<audio id="ambient" src="https://github.com/xymisha05/gilcoin-website/blob/main/ambient.mp3" loop></audio>
 
 
     <!-- ☰ Hamburger Menu Button -->
@@ -380,7 +380,7 @@
     document.getElementById("mainApp").style.display = "block";
 
     // Play ambient background music
-    const ambientAudio = document.getElementById("ambient");
+    const ambient = document.getElementById("ambient");
     ambientAudio.volume = 0; // Start silent
     ambientAudio.play().then(() => {
         // Gradually fade in the volume
